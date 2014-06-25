@@ -1,0 +1,2 @@
+include README.rst LICENCE
+recursive-include dh_carrinho *.py *.html
