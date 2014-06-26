@@ -61,13 +61,14 @@ class PaginaCarrinhoView(TemplateView):
         carrinho = get_carrinho(request)
         operacao = request.POST.get(u'operacao', None)
         pk_item = None
+        from IPython import embd;embed()
         try:
             pk_item = int(request.POST[u'item'])
         except:
             return HttpResponseForbidden()
         if operacao == u'altera_quantidade':
             try:
-                quantidade = int(request.POST[u'quantidade'])
+                quantidade = int(request.POST.get(u'quantidade', 0))
             except:
                 return HttpResponseForbidden()
             carrinho.altera_quantidade(pk_item, quantidade)
