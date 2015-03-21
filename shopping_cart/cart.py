@@ -30,14 +30,14 @@ class Cart(object):
         self.items = []
 
     def get_item(self, item_pk):
-        for i in self.items:
-            if i.item_pk == item_pk:
-                return i
+        for item in self.items:
+            if item.item_pk == item_pk:
+                return item
 
     def get_or_create_item(self, item_pk):
-        for i in self.items:
-            if i.item_pk == item_pk:
-                return i
+        for item in self.items:
+            if item.item_pk == item_pk:
+                return item
         new_item = ItemCarrinho(item_pk, 0)
         self.items.append(new_item)
         return new_item
@@ -51,7 +51,7 @@ class Cart(object):
     def decrease_quantity(self, item_pk):
         if self.get_item(item_pk).quantity > 0:
             self.get_item(item_pk).quantity -= 1
-        #se chegamos a 0 deste item, removemos ele
+
         if self.get_item(item_pk).quantity == 0:
             self.delete_item(item_pk)
 
