@@ -1,11 +1,14 @@
 #-*- coding: utf-8 -*-
-from dh_carrinho.negocio import Carrinho, ItemCarrinho, get_carrinho
+
+from shopping_cart.negocio import Carrinho, ItemCarrinho, get_carrinho
 from django.views.generic import View, TemplateView
 from django.http import  HttpResponseForbidden, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.conf import settings
 from django.template import RequestContext
+
 OPERACOES = (u'a', u'd', u'r',)#aumentar quantidade, diminuir quantidade, remover item
+
 class CarrinhoView(View):
     def get(*args, **kwargs):
         return HttpResponseForbidden()
@@ -21,7 +24,7 @@ class CarrinhoView(View):
                 pass
             if operacao not in OPERACOES or pk_item is None:
                 return HttpResponseForbidden()
-        
+
             if operacao == u'a':
                 carrinho.aumenta_quantidade(pk_item)
             elif operacao == u'd':
@@ -37,8 +40,8 @@ class ListaAtualView(View):
 
     def get(self, request, *args, **kwargs):
         carrinho = get_carrinho(request)
-        return render_to_response(settings.DH_CARRINHO_TEMPLATE_CARRINHO, 
-                                  RequestContext(request, 
+        return render_to_response(settings.shopping_cart_TEMPLATE_CARRINHO,
+                                  RequestContext(request,
                                                  {u'carrinho': carrinho}))
 
     def post(*args, **kwargs):

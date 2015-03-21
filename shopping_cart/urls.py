@@ -1,5 +1,5 @@
 from django.conf.urls import patterns, url
-from dh_carrinho.views import CarrinhoView, ListaAtualView
+from shopping_cart.views import CarrinhoView, ListaAtualView
 
 
 dh_carrinho_urls = patterns('',

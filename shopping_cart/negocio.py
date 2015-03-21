@@ -1,6 +1,7 @@
 #-*- coding: utf-8 -*-
+
 from django.db.models import get_model
-from dh_carrinho import MODEL_PRODUTO
+from shopping_cart import MODEL_PRODUTO
 
 
 class ItemCarrinho(object):
