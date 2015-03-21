@@ -2,7 +2,7 @@
 
 from django.db.models import get_model
 
-from shopping_cart import PRODUCT_MODEL
+from shopping_cart.config import PRODUCT_MODEL
 
 
 class CartItem(object):
