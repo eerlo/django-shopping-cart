@@ -3,7 +3,6 @@ django-shopping-cart
 
 A generic django shopping cart ajax-based solution.
 
-
 INSTALLATION
 ------------
 
