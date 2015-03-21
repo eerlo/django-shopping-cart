@@ -56,24 +56,26 @@ How to use:
 
 This app receives a POST request in the /shopping-cart/ url, with the product_id and the current operation(add, remove).
 
-Example: to add a product on the shopping cart, you could use:
+Example, to add a product on the shopping cart, you could use:
 
-.. code:: django
+```
   <form class="cart-manipulation" action="{% url 'shopping-cart-view' %}" method="post">
   {% csrf_token %}
     <input type="hidden" name="item" value="{{ item.pk }}">
-  <input type="hidden" name="operation" value="add">
+  <input type="hidden" name="cart-action" value="add">
   <input type="submit" value="Add to Cart">
   </form>
+```
 
 To remove an item from the cart:
-.. code:: django
+```
     <form class="cart-manipulation" action="{% url 'shopping-cart-view' %}" method="post">
   {% csrf_token %}
     <input type="hidden" name="item" value="{{ item.pk }}">
-  <input type="hidden" name="operacao" value="remove">
+  <input type="hidden" name="cart-action" value="remove">
   <input type="submit" value="Remove from cart">
   </form>
+```
 
 This app requires Jquery in the template this cart will be used.
 
