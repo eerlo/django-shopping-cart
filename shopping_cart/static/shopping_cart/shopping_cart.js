@@ -22,7 +22,7 @@ $(document).on("submit", "form.cart-manipulation",
 
         $.ajax({
             type: "POST",
-            url: '/cart/',
+            url: '/shopping-cart/',
             data: {"cart-action": cart_action,
                 "item": product,
                 "csrfmiddlewaretoken": token

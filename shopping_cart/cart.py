@@ -38,7 +38,7 @@ class Cart(object):
         for item in self.items:
             if item.item_pk == item_pk:
                 return item
-        new_item = ItemCarrinho(item_pk, 0)
+        new_item = CartItem(item_pk, 0)
         self.items.append(new_item)
         return new_item
 
@@ -65,4 +65,4 @@ class Cart(object):
         return sum([item.quantity for item in self.items])
 
 def get_cart(request):
-    return request.session.get(u'cart', Carrinho())
+    return request.session.get(u'cart', Cart())
