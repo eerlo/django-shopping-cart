@@ -7,14 +7,14 @@ INSTALLATION
 ------------
 
 Install this package with
-```shell
-python setup.py install"
+```
+python setup.py install
 ```
 
 Settings
 ********
 Configure the SESSION_SERIALIZER setting to "PickeSerializer", because it can store non-primitive python objects.
-```shell
+```
 SESSION_SERIALIZER = u"django.contrib.sessions.serializers.PickleSerializer"
 ```
 
@@ -22,12 +22,12 @@ Configure the SESSION_ENGINE setting, it`s recommended to use the 'django.contri
 "signed_cookie", that uses encrypted cookies.
 
 Coonfigure the SHOPPING_CART_PRODUCT_MODEL, to add your product model.
-```shell
+```
 SHOPPING_CART_PRODUCT_MODEL = 'app.Model'
 ```
 
 Create an configure your template, that will show the shopping cart data.
-```shell
+```
 SHOPPING_CART_TEMPLATE = u'cart.html'
 ```
 
@@ -37,7 +37,7 @@ Each item is an object with the "item_pk", "quantity" and some interesting metho
 
 
 Simple shopping cart template sample:
-```shell
+```
 <ul>
 {% for i in cart.items  %}
     <li>{{ i.quantity  }} do item {{ i.get_object }}</li>
