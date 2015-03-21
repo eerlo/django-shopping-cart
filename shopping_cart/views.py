@@ -1,87 +1,59 @@
 #-*- coding: utf-8 -*-
 
-from shopping_cart.negocio import Carrinho, ItemCarrinho, get_carrinho
 from django.views.generic import View, TemplateView
 from django.http import  HttpResponseForbidden, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.conf import settings
 from django.template import RequestContext
 
-OPERACOES = (u'a', u'd', u'r',)#aumentar quantidade, diminuir quantidade, remover item
+from shopping_cart.cart import get_cart
 
-class CarrinhoView(View):
-    def get(*args, **kwargs):
-        return HttpResponseForbidden()
+class ShoppingCartView(View):
+
+    OPERATIONS = (u'add', u'decrease', u'remove',)
+
+    def _get_item(self, request):
+        try:
+            return int(request.POST[u'item'])
+        except KeyError:
+            return HttpResponseForbidden()
+
+    def _get_operation(self, request):
+        cart_action = request.POST.get(u'cart-action', None)
+
+        if cart_action not in self.OPERATIONS:
+            return HttpResponseForbidden
+
+        return cart_action
+
+    def _do_operation(self, cart, cart_action, item_pk):
+        if cart_action == u'add':
+            cart.increase_quantity(item_pk)
+        elif cart_action == u'decrease':
+            cart.decrease_quantity(item_pk)
+        elif cart_action == u'remove':
+            cart.delete_item(item_pk)
+
+        return cart
+
     def post(self, request, *args, **kwargs):
         if request.is_ajax():
 
-            carrinho = get_carrinho(request)
-            operacao = request.POST.get(u'operacao', None)
-            pk_item = None
-            try:
-                pk_item = int(request.POST[u'item'])
-            except:
-                pass
-            if operacao not in OPERACOES or pk_item is None:
-                return HttpResponseForbidden()
+            cart = get_cart(request)
+            cart_action = self._get_operation(request)
+            item_pk = self._get_item(request)
 
-            if operacao == u'a':
-                carrinho.aumenta_quantidade(pk_item)
-            elif operacao == u'd':
-                carrinho.diminui_quantidade(pk_item)
-            elif operacao == u'r':
-                carrinho.deleta_item(pk_item)
-            request.session[u'carrinho'] = carrinho
-            return HttpResponse('ok')
+            request.session[u'cart'] = self._do_operation(cart, cart_action, item_pk)
+
+            return HttpResponse('Operation Success!')
         else:
             return HttpResponseForbidden()
 
-class ListaAtualView(View):
+
+class ShoppingCartListView(View):
 
     def get(self, request, *args, **kwargs):
-        carrinho = get_carrinho(request)
-        return render_to_response(settings.shopping_cart_TEMPLATE_CARRINHO,
-                                  RequestContext(request,
-                                                 {u'carrinho': carrinho}))
+        context = {u'cart': get_cart(request)}
 
-    def post(*args, **kwargs):
-        return HttpResponseForbidden()
-
-
-class PaginaCarrinhoView(TemplateView):
-    """
-    View para ser utilizada pelos projetos na renderização da página que
-    mostra o carrinho completo, e que se premite alterar quantidades, remover
-    itens, etc.
-    """
-
-    def get_context_data(self, **kwargs):
-        context = super(PaginaCarrinhoView, self).get_context_data(**kwargs)
-        context[u'carrinho'] = get_carrinho(self.request)
-        return context
-
-    def post(self, request, *args, **kwargs):
-        carrinho = get_carrinho(request)
-        operacao = request.POST.get(u'operacao', None)
-        pk_item = None
-        from IPython import embd;embed()
-        try:
-            pk_item = int(request.POST[u'item'])
-        except:
-            return HttpResponseForbidden()
-        if operacao == u'altera_quantidade':
-            try:
-                quantidade = int(request.POST.get(u'quantidade', 0))
-            except:
-                return HttpResponseForbidden()
-            carrinho.altera_quantidade(pk_item, quantidade)
-            request.session[u'carrinho'] = carrinho
-            #redirect para a mesma pagina
-            return HttpResponseRedirect(request.path)
-        elif operacao == u'apaga_item':
-            carrinho.deleta_item(pk_item)
-            request.session[u'carrinho'] = carrinho
-            #redirect para a mesma pagina
-            return HttpResponseRedirect(request.path)
-        else:
-            return HttpResponseForbidden()
+        return render_to_response(settings.SHOPPING_CART_TEMPLATE,
+            RequestContext(request, context))

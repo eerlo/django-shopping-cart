@@ -1,14 +1,8 @@
 from django.conf.urls import patterns, url
-from shopping_cart.views import CarrinhoView, ListaAtualView
+from shopping_cart.views import ShoppingCartView, ShoppingCartListView
 
 
 dh_carrinho_urls = patterns('',
-                       url(r'^$',
-                           CarrinhoView.as_view(),
-                           name='dh_carrinho_view'),
-
-                       url(r'^lista/$',
-                           ListaAtualView.as_view(),
-                           name='dh_carrinho_lista_view'),
-
-                       )
+    url(r'^$', ShoppingCartView.as_view(), name='shopping-cart-view'),
+    url(r'^list/$', ShoppingCartListView.as_view(),
+        name='shopping-cart-list-view'))

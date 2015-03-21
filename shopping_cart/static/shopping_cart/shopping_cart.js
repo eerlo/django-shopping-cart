@@ -1,36 +1,38 @@
-function trigger_apos_atualizar_carrinho(){
-}
+function cart_after_updated_trigger(){ }
+function cart_before_updated_trigger(){ }
 
-function atualiza_div_carrinho(item_adicionado, operacao, produto){
+function update_cart(has_update, cart_action, product){
     $.ajax({
         type: "GET",
-        url: '/carrinho/lista/',
-        success: function(retorno){
-                    $('#carrinho').html(retorno);
-                    if(item_adicionado){
-                        trigger_apos_atualizar_carrinho(operacao, produto);
-                    }
-                 }
+        url: '/shopping-cart/list/',
+        success: function(data){
+            $('#cart').html(data);
+            if(has_update){
+                cart_after_updated_trigger(cart_action, product);
+            }
+         }
     });
 }
 
-$(document).on("submit", "form.manipulacao-carrinho",
+$(document).on("submit", "form.cart-manipulation",
     function(){
-        produto = $(this).find('input[name=item]:eq(0)').val();
+        product = $(this).find('input[name=item]:eq(0)').val();
         token = $(this).find('input[name=csrfmiddlewaretoken]:eq(0)').val();
-        operacao = $(this).find('input[name=operacao]:eq(0)').val();
+        cart_action = $(this).find('input[name=cart_action]:eq(0)').val();
+
         $.ajax({
             type: "POST",
-            url: '/carrinho/',
-            data: {"operacao": operacao,
-                   "item": produto,
-                   "csrfmiddlewaretoken": token},
+            url: '/cart/',
+            data: {"cart-action": cart_action,
+                "item": product,
+                "csrfmiddlewaretoken": token
+            },
             success: function(){
-                        atualiza_div_carrinho(true, operacao, produto);
-                     }
+                update_cart(true, cart_action, product);
+            }
         });
         return false;
     }
 );
 
-atualiza_div_carrinho(false, false, false);
+update_cart(false, false, false);
