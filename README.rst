@@ -1,86 +1,87 @@
-dh_carrinho
+django-shopping-cart
 ===============
 
-Aplicação de carrinho de compras
+A generic django shopping cart ajax-based solution.
 
 
-INSTALAÇÃO 
+INSTALLATION
 ------------
 
-Instalar o pacote com "python setup.py install"
+Install this package with
+```shell
+python setup.py install"
+```
 
 Settings
 ********
-Configure o SESSION_SERIALIZER para o PickeSerializer, que consegue serializar objetos python não-primitivos.
+Configure the SESSION_SERIALIZER setting to "PickeSerializer", because it can store non-primitive python objects.
+```shell
 SESSION_SERIALIZER = u"django.contrib.sessions.serializers.PickleSerializer"
+```
 
-Configure o SESSION_ENGINE
-Recomenda-se utilizar o cache ('django.contrib.sessions.backends.cache'), juntamente com o memcache como backend de cache.
-Ou então o signed_cookie, que armazena tudo em cookies criptografados pela SECRET_KEY de seu settings, que é muito importante que seja totalmente confidencial.
+Configure the SESSION_ENGINE setting, it`s recommended to use the 'django.contrib.sessions.backends.cache', or
+"signed_cookie", that uses encrypted cookies.
 
-Adicione a app.model que deseja-se utilizar como produto.
-  ``DH_CARRINHO_MODEL_PRODUTO = 'app.Model'``
+Coonfigure the SHOPPING_CART_PRODUCT_MODEL, to add your product model.
+```shell
+SHOPPING_CART_PRODUCT_MODEL = 'app.Model'
+```
 
-Adicione o seu template com a responsabilidade única de mostrar o carrinho.
-  ``DH_CARRINHO_TEMPLATE_CARRINHO = u'carrinho.html'``
-Este template vai receber como contexto um objeto carrinho, com o nome de carrinho, que possui uma lista chamada itens, e alguns métodos interessantes, como quantidade total de itens.
-Cada item da lista é um objeto ItemCarrinho, que possui a pk_item, a quantidade, e alguns métodos interessantes, como o objeto(), que retorna o objeto MODEL configurado no settings, baseado na pk_item daquele ItemCarrinho.
+Create an configure your template, that will show the shopping cart data.
+```shell
+SHOPPING_CART_TEMPLATE = u'cart.html'
+```
+
+This template will receive as context_data, a "cart" object, with the items list.
+Each item is an object with the "item_pk", "quantity" and some interesting methods, such as get_object(), that will return the object related with the "item_pk" value.
 
 
-Exemplo de template de carrihno:
+
+Simple shopping cart template sample:
+```shell
 <ul>
-{% for i in carrinho.itens  %}
-    <li>{{ i.quantidade  }} do item {{ i.objeto.nome }}</li>
+{% for i in cart.items  %}
+    <li>{{ i.quantity  }} do item {{ i.get_object }}</li>
 {% endfor %}
 </ul>
+```
 
 Urls
 ********
-  ``from dh_carrinho.urls import dh_carrinho_urls ``
-  ``url(r'^carrinho/', include(dh_carrinho_urls),),,``
+  ``from shopping_cart.urls import shopping_cart_urls ``
+  ``url(r'^shopping-cart/', include(shopping_cart_urls),),,``
 
 
-Utilização:
+How to use:
 **********************
 
-Esta aplicação recebe POST na url /carrinho/ com o ID do produto e a operação a ser realizada.
+This app receives a POST request in the /shopping-cart/ url, with the product_id and the current operation(add, remove).
 
-Exemplo para adicionar um produto ao carrinho, para cada item faça isto:
+Example: to add a product on the shopping cart, you could use:
 
 .. code:: django
-
-  <form class="manipulacao-carrinho" action="{% url 'dh_carrinho_view' %}" method="post">
+  <form class="cart-manipulation" action="{% url 'shopping-cart-view' %}" method="post">
   {% csrf_token %}
-    <input type="hidden" name="item" value="{{ objeto.pk }}">
-  <input type="hidden" name="operacao" value="a">
-  <input type="submit" value="Adicionar">
+    <input type="hidden" name="item" value="{{ item.pk }}">
+  <input type="hidden" name="operation" value="add">
+  <input type="submit" value="Add to Cart">
   </form>
 
-
-Remover um produto do carrinho:
+To remove an item from the cart:
 .. code:: django
-    <form class="manipulacao-carrinho" action="{% url 'dh_carrinho_view' %}" method="post">
+    <form class="cart-manipulation" action="{% url 'shopping-cart-view' %}" method="post">
   {% csrf_token %}
-    <input type="hidden" name="item" value="{{ objeto.pk }}">
-  <input type="hidden" name="operacao" value="d">
-  <input type="submit" value="Remover">
+    <input type="hidden" name="item" value="{{ item.pk }}">
+  <input type="hidden" name="operacao" value="remove">
+  <input type="submit" value="Remove from cart">
   </form>
 
+This app requires Jquery in the template this cart will be used.
 
-OBS: é importante a utilização da class="manipulacao-carrinho", para que funcione os envios ajax.
-
-Esta app requer que se esteja utilizando o jquery no template que utilizar manipulação de carrinho.
-No final do template, após o jquery, adicionar o javascript que faz os envios de carrinho e atualiza o carrinho.
-
+In the end of your template, you must include the following javascript file:
 .. code:: javascript
-<script type="text/javascript" src="{% static 'dh_carrinho/dh_carrinho.js' %}"></script>
+<script type="text/javascript" src="{% static 'shopping_cart/shopping_cart.js' %}"></script>
 
-Mostrando o carrinho:
+Showing the cart content:
 **********************
-No local one se deseja mostrar o carrinho, basta adicionar um DIV com id="carrinho", que a aplicação automaticamente atualiza a mesma, com o template configurado no setting.
-
-
-Importante:
-***********************
-Esta aplicação utiliza a sessão do usuário para armazenar o carrinho de compras, portanto, seja sensato ao cofigurar o backend de session storage em seu projeto Django.
-Recomenda-se fortemente o cache como Backend de sessão e o Memcache como backend de cache.
+You just need to create a DIV element, with the id="shopping-cart", and this application will automatically render the template you`ve created and configured in the settings file.
