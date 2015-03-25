@@ -61,5 +61,5 @@ class ShoppingCartListView(View):
 class ShoppingCartListDetailView(ShoppingCartListView):
 
     def get(self, request, *args, **kwargs):
-        kwargs['template_name'] = settings.SHOPPING_CART_DETAIL_TEMPLATE
+        kwargs['template_name'] = settings.SHOPPING_CART_LIST_TEMPLATE
         return super(ShoppingCartListDetailView, self).get(request, *args, **kwargs)
