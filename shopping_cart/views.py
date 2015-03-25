@@ -1,9 +1,9 @@
 #-*- coding: utf-8 -*-
 
-from django.views.generic import View, TemplateView
-from django.http import  HttpResponseForbidden, HttpResponse, HttpResponseRedirect
-from django.shortcuts import render_to_response
 from django.conf import settings
+from django.shortcuts import render
+from django.http import  HttpResponseForbidden, HttpResponse
+from django.views.generic import View
 from django.template import RequestContext
 
 from shopping_cart.cart import get_cart
@@ -53,7 +53,13 @@ class ShoppingCartView(View):
 class ShoppingCartListView(View):
 
     def get(self, request, *args, **kwargs):
+        template_name = kwargs.get('template_name', settings.SHOPPING_CART_TEMPLATE)
         context = {u'cart': get_cart(request)}
 
-        return render_to_response(settings.SHOPPING_CART_TEMPLATE,
-            RequestContext(request, context))
+        return render(request, template_name, context)
+
+class ShoppingCartListDetailView(ShoppingCartListView):
+
+    def get(self, request, *args, **kwargs):
+        kwargs['template_name'] = settings.SHOPPING_CART_DETAIL_TEMPLATE
+        return super(ShoppingCartListDetailView, self).get(request, *args, **kwargs)
