@@ -10,7 +10,7 @@ setup(
     author='Eduardo Erlo',
     author_email='eduardo.erlo@gmail.com',
     description='App de carrinho de compras',
-    long_description=open('README.rst').read(),
+    long_description=open('README.md').read(),
     install_requires=[
         'django>=1.5,<1.8',
         'coverage==3.7.1',
