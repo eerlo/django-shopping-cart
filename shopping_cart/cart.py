@@ -58,8 +58,9 @@ class Cart(object):
     def delete_item(self, item_pk):
         self.items.remove(self.get_item(item_pk))
 
-    def erase_cart(self):
+    def erase_cart(self, request):
         self.items = []
+        request.session.pop(u'cart')
 
     def get_quantity_total_items(self):
         return sum([item.quantity for item in self.items])

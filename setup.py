@@ -3,7 +3,7 @@ from setuptools import find_packages
 
 setup(
     name='django-shopping-cart',
-    version='1.0',
+    version='1.0.1',
     packages=find_packages(),
     include_package_data=True,
     license='Apache 2.0',
